@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: '"true"'
+    nginx.ingress.kubernetes.io/secure-backends: '"true"'
+  labels: null
+  name: mainflux
+  namespace: mainflux
+spec:
+  rules:
+  - host: k8s-dev.mainflux.com
+    http:
+      paths:
+      - backend:
+          serviceName: things
+          servicePort: 8182
+        path: /version
+      - backend:
+          serviceName: users
+          servicePort: 8180
+        path: /users
+      - backend:
+          serviceName: users
+          servicePort: 8180
+        path: /tokens
+      - backend:
+          serviceName: things
+          servicePort: 8182
+        path: /things
+      - backend:
+          serviceName: things
+          servicePort: 8182
+        path: /channels
+      - backend:
+          serviceName: http-adapter
+          servicePort: 8185
+        path: /http
+      - backend:
+          serviceName: ws-adapter
+          servicePort: 8186
+        path: /ws
+      - backend:
+          serviceName: mqtt-adapter
+          servicePort: 8880
+        path: /mqtt
+      - backend:
+          serviceName: ui
+          servicePort: 3000
+        path: /
+  tls:
+  - hosts:
+    - iotfuse2019.mainflux.com
+    secretName: iotfuse2019-mainflux-com-tls

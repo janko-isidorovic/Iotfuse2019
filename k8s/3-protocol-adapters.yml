@@ -1,0 +1,247 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+    kind: Deployment
+    metadata:
+      annotations:
+        deployment.kubernetes.io/revision: '2'
+      labels: null
+      name: http-adapter
+      namespace: mainflux
+    spec:
+      progressDeadlineSeconds: 600
+      replicas: 1
+      revisionHistoryLimit: 10
+      selector:
+        matchLabels: null
+      strategy:
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+        type: RollingUpdate
+      template:
+        metadata:
+          annotations: null
+          labels:
+            app: http-adapter
+        spec:
+          containers:
+          - env:
+            - name: MF_HTTP_ADAPTER_LOG_LEVEL
+              value: debug
+            - name: MF_HTTP_ADAPTER_PORT
+              value: '8185'
+            - name: MF_NATS_URL
+              value: nats://nats-nats-client.mainflux-nats:4222
+            - name: MF_THINGS_URL
+              value: things:8183
+            image: mainflux/http:latest
+            imagePullPolicy: Always
+            name: http-adapter
+            ports:
+            - containerPort: 8185
+              name: 8185tcp02
+              protocol: TCP
+            resources: {}
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {}
+              privileged: false
+              procMount: Default
+              readOnlyRootFilesystem: false
+              runAsNonRoot: false
+            stdin: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            tty: true
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: '2'
+    labels: null
+    name: mqtt-adapter
+    namespace: mainflux
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels: null
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations: null
+        labels:
+          app: mqtt-adapter
+      spec:
+        containers:
+        - env:
+          - name: MF_MQTT_ADAPTER_LOG_LEVEL
+            value: debug
+          - name: MF_MQTT_ADAPTER_PORT
+            value: '1883'
+          - name: MF_MQTT_ADAPTER_REDIS_HOST
+            value: redis-mqtt-master.mainflux-redis
+          - name: MF_MQTT_ADAPTER_WS_PORT
+            value: '8880'
+          - name: MF_MQTT_INSTANCE_ID
+            value: mqtt-adapter-1
+          - name: MF_NATS_URL
+            value: nats://nats-nats-client.mainflux-nats:4222
+          - name: MF_THINGS_URL
+            value: things:8183
+          image: mainflux/mqtt:latest
+          imagePullPolicy: Always
+          name: mqtt-adapter
+          ports:
+          - containerPort: 1883
+            name: 1883tcp02
+            protocol: TCP
+          - containerPort: 8880
+            name: 8880tcp02
+            protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: '2'
+    labels: null
+    name: ws-adapter
+    namespace: mainflux
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels: null
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations: null
+        labels:
+          app: ws-adapter
+      spec:
+        containers:
+        - env:
+          - name: MF_NATS_URL
+            value: nats://nats-nats-client.mainflux-nats:4222
+          - name: MF_THINGS_URL
+            value: things:8183
+          - name: MF_WS_ADAPTER_LOG_LEVEL
+            value: debug
+          - name: MF_WS_ADAPTER_PORT
+            value: '8186'
+          image: mainflux/ws:latest
+          imagePullPolicy: Always
+          name: ws-adapter
+          ports:
+          - containerPort: 8186
+            name: 8186tcp02
+            protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: '2'
+    labels: null
+    name: coap-adapter
+    namespace: mainflux
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels: null
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations: null
+        labels:
+          app: coap-adapter
+      spec:
+        containers:
+        - env:
+          - name: MF_COAP_ADAPTER_LOG_LEVEL
+            value: debug
+          - name: MF_COAP_ADAPTER_PORT
+            value: '5683'
+          - name: MF_NATS_URL
+            value: nats://nats-nats-client.mainflux-nats:4222
+          - name: MF_THINGS_URL
+            value: things:8183
+          image: mainflux/coap:latest
+          imagePullPolicy: Always
+          name: coap-adapter
+          ports:
+          - containerPort: 5683
+            name: 5683udp02
+            protocol: UDP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30

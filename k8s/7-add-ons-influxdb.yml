@@ -1,0 +1,142 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: '2'
+    labels: null
+    name: influxdb-reader
+    namespace: mainflux
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels: null
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: 'false'
+        labels:
+          app: influxdb-reader
+      spec:
+        containers:
+        - env:
+          - name: MF_INFLUX_READER_DB_HOST
+            value: influxdb.mainflux-influxdb
+          - name: MF_INFLUX_READER_DB_NAME
+            value: mainflux
+          - name: MF_INFLUX_READER_DB_PASS
+            value: mainflux
+          - name: MF_INFLUX_READER_DB_PORT
+            value: '8086'
+          - name: MF_INFLUX_READER_DB_USER
+            value: mainflux
+          - name: MF_INFLUX_READER_LOG_LEVEL
+            value: debug
+          - name: MF_INFLUX_READER_PORT
+            value: '8905'
+          - name: MF_THINGS_URL
+            value: things:8183
+          image: mainflux/influxdb-reader:latest
+          imagePullPolicy: Always
+          name: influxdb-reader
+          ports:
+          - containerPort: 8905
+            name: 8905tcp02
+            protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: '2'
+    labels: null
+    name: influxdb-writer
+    namespace: mainflux
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels: null
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: 'false'
+        labels:
+          app: influxdb-writer
+      spec:
+        containers:
+        - env:
+          - name: MF_INFLUX_WRITER_BATCH_SIZE
+            value: '5000'
+          - name: MF_INFLUX_WRITER_BATCH_TIMEOUT
+            value: '5'
+          - name: MF_INFLUX_WRITER_DB_HOST
+            value: influxdb.mainflux-influxdb
+          - name: MF_INFLUX_WRITER_DB_NAME
+            value: mainflux
+          - name: MF_INFLUX_WRITER_DB_PASS
+            value: mainflux
+          - name: MF_INFLUX_WRITER_DB_PORT
+            value: '8086'
+          - name: MF_INFLUX_WRITER_DB_USER
+            value: mainflux
+          - name: MF_INFLUX_WRITER_LOG_LEVEL
+            value: debug
+          - name: MF_INFLUX_WRITER_PORT
+            value: '8900'
+          - name: MF_NATS_URL
+            value: nats://nats-nats-client.mainflux-nats:4222
+          image: mainflux/influxdb-writer:latest
+          imagePullPolicy: Always
+          name: influxdb-writer
+          ports:
+          - containerPort: 8900
+            name: 8900tcp02
+            protocol: TCP
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {}
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30

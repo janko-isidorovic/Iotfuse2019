@@ -34,14 +34,6 @@ spec:
           servicePort: 8182
         path: /channels
       - backend:
-          serviceName: http-adapter
-          servicePort: 8185
-        path: /http
-      - backend:
-          serviceName: ws-adapter
-          servicePort: 8186
-        path: /ws
-      - backend:
           serviceName: mqtt-adapter
           servicePort: 8880
         path: /mqtt
